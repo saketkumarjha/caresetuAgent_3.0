@@ -48,7 +48,7 @@ caresetuAgent/
 
 - Python 3.8+
 - Google Cloud Account (for Calendar API)
-- LiveKit Account
+- LiveKit Account (Free tier available)
 - AssemblyAI Account
 
 ### Installation
@@ -78,10 +78,36 @@ caresetuAgent/
    - Follow the [Google Calendar Setup Guide](docs/GOOGLE_CALENDAR_SETUP.md)
    - Place `credentials.json` in the `config/` directory
 
-5. **Run the agent**
+5. **Run the agent locally**
    ```bash
    python main.py
    ```
+
+### Deployment Options
+
+1. **Docker (Local or Cloud)**
+
+   ```bash
+   # Windows
+   deploy.bat
+
+   # Linux/Mac
+   docker build -t caresetu-voice-agent .
+   docker run -p 8081:8081 --env-file .env caresetu-voice-agent
+   ```
+
+2. **Docker Compose**
+
+   ```bash
+   docker-compose up --build
+   ```
+
+3. **Cloud Deployment (Free Options)**
+   - LiveKit Cloud (Free tier: 1,000 participant minutes/month)
+   - Render.com (Free tier available)
+   - Railway.app (Free tier available)
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
 
 ## ⚙️ Configuration
 
