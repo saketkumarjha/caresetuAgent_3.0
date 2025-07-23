@@ -1,0 +1,16 @@
+# Exclude large directories
+data/
+docs/
+tests/
+knowledge/
+scripts/
+temp/
+__pycache__/
+*.pyc
+*.pyo
+*.log
+*.tmp
+.git/
+.gitignore
+*.md
+frontend-example/
