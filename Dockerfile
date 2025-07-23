@@ -1,29 +1,16 @@
-FROM python:3.10-slim
+FROM python:3.11.9-slim
 
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    libpq-dev \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy requirements first for better caching
+# Copy requirements and install dependencies first (better caching)
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application
+# Copy your entire application code
 COPY . .
 
-# Set environment variables
-ENV PYTHONUNBUFFERED=1
+# Set working directory to where your agent.py is located
+WORKDIR /app/src
 
-# Install curl for health checks
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
-
-# Expose port for health checks (optional)
-EXPOSE 8080
-
-# Run the agent with LiveKit Agents CLI
-CMD ["python", "-m", "livekit.agents", "start", "src.agent"]
+# Run your agent
+CMD ["python", "agent.py"]
