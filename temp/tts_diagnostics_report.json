@@ -1,0 +1,71 @@
+{
+  "results": {
+    "network": {
+      "https://google.com": {
+        "status": 200,
+        "success": true,
+        "error": null
+      },
+      "https://api.cartesia.ai": {
+        "status": 200,
+        "success": true,
+        "error": null
+      },
+      "https://api.elevenlabs.io": {
+        "status": 404,
+        "success": false,
+        "error": null
+      }
+    },
+    "environment": {
+      "CARTESIA_API_KEY": {
+        "present": true,
+        "value": "sk_car_D...enm2",
+        "valid_format": true
+      },
+      "ELEVENLABS_API_KEY": {
+        "present": true,
+        "value": "ELEVENLA..._KEY",
+        "valid_format": false
+      },
+      "GOOGLE_API_KEY": {
+        "present": true,
+        "value": "AIzaSyA2...ED2M",
+        "valid_format": true
+      }
+    },
+    "silero": {
+      "success": false,
+      "error": "module 'livekit.plugins.silero' has no attribute 'TTS'"
+    },
+    "cartesia": {
+      "success": false,
+      "status": 400,
+      "error": "Cartesia-Version header is required in YYYY-MM-DD form, latest version is 2025-04-16\n"
+    },
+    "elevenlabs": {
+      "success": false,
+      "error": "Invalid or missing ElevenLabs API key"
+    }
+  },
+  "recommendations": [
+    {
+      "priority": "high",
+      "issue": "Network connectivity problems",
+      "solution": "Check your internet connection and firewall settings",
+      "details": "Failed to connect to: https://api.elevenlabs.io"
+    },
+    {
+      "priority": "medium",
+      "issue": "Invalid API key format",
+      "solution": "Check and update API keys in your .env file",
+      "details": "Invalid format: ELEVENLABS_API_KEY"
+    },
+    {
+      "priority": "critical",
+      "issue": "No TTS services available",
+      "solution": "Fix network connection or API keys, or install Silero TTS",
+      "details": "All TTS services failed - agent cannot function"
+    }
+  ]
+}

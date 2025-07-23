@@ -1,0 +1,112 @@
+[
+  {
+    "id": "c7edfbd4-26aa-434d-998a-04a77102e02f",
+    "query": "What are the new COVID-19 testing protocols for 2024?",
+    "topic": "healthcare",
+    "session_id": "test_session_001",
+    "timestamp": "2025-07-21T19:43:16.351761",
+    "attempted_sources": [
+      "FAQ Documents",
+      "Policy Documents",
+      "Procedure Manuals"
+    ],
+    "gap_type": "outdated_info",
+    "user_provided_info": null,
+    "resolved": false,
+    "resolution_timestamp": null
+  },
+  {
+    "id": "0365d614-960e-49b6-a413-bbf17c26a261",
+    "query": "What are the new COVID-19 testing protocols for 2024?",
+    "topic": "healthcare",
+    "session_id": "test_session_001",
+    "timestamp": "2025-07-21T19:43:46.391586",
+    "attempted_sources": [
+      "FAQ Documents",
+      "Policy Documents",
+      "Procedure Manuals"
+    ],
+    "gap_type": "outdated_info",
+    "user_provided_info": null,
+    "resolved": false,
+    "resolution_timestamp": null
+  },
+  {
+    "id": "b73045e2-5d9f-4163-9dd9-8efa04ae2b51",
+    "query": "What's the procedure for emergency appointments?",
+    "topic": "emergency",
+    "session_id": "test_agent_session",
+    "timestamp": "2025-07-21T19:45:28.510140",
+    "attempted_sources": [
+      "FAQ",
+      "Procedures",
+      "Policies"
+    ],
+    "gap_type": "incomplete_info",
+    "user_provided_info": null,
+    "resolved": false,
+    "resolution_timestamp": null
+  },
+  {
+    "id": "22dce666-4f64-4d56-9a9c-a7ad1c3a3fad",
+    "query": "What are the new COVID-19 testing protocols for 2024?",
+    "topic": "healthcare",
+    "session_id": "test_session_001",
+    "timestamp": "2025-07-21T19:49:10.851590",
+    "attempted_sources": [
+      "FAQ Documents",
+      "Policy Documents",
+      "Procedure Manuals"
+    ],
+    "gap_type": "outdated_info",
+    "user_provided_info": null,
+    "resolved": false,
+    "resolution_timestamp": null
+  },
+  {
+    "id": "083ead32-aaf6-4f60-b4cd-983d0a8a72af",
+    "query": "What are the new COVID-19 testing protocols for 2024?",
+    "topic": "healthcare",
+    "session_id": "test_session_001",
+    "timestamp": "2025-07-21T19:51:29.715783",
+    "attempted_sources": [
+      "FAQ Documents",
+      "Policy Documents",
+      "Procedure Manuals"
+    ],
+    "gap_type": "outdated_info",
+    "user_provided_info": null,
+    "resolved": false,
+    "resolution_timestamp": null
+  },
+  {
+    "id": "b59f2969-6edb-4fb3-800e-d6d15e1f63f9",
+    "query": "What are the new COVID protocols?",
+    "topic": "healthcare",
+    "session_id": "test_session",
+    "timestamp": "2025-07-21T19:52:12.533207",
+    "attempted_sources": [
+      "PDF Documents",
+      "JSON Knowledge Base"
+    ],
+    "gap_type": "outdated_info",
+    "user_provided_info": null,
+    "resolved": false,
+    "resolution_timestamp": null
+  },
+  {
+    "id": "66245a74-22c3-4810-a034-09ceb0e406e8",
+    "query": "What are the weekend hours?",
+    "topic": "hours",
+    "session_id": "verification_session",
+    "timestamp": "2025-07-21T19:54:26.565383",
+    "attempted_sources": [
+      "FAQ",
+      "Policy Documents"
+    ],
+    "gap_type": "missing_info",
+    "user_provided_info": null,
+    "resolved": false,
+    "resolution_timestamp": null
+  }
+]

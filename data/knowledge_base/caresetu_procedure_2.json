@@ -1,0 +1,17 @@
+{
+  "id": "caresetu_procedure_2",
+  "title": "Booking Appointments",
+  "content": "\n                How to Book Appointments on CareSetu:\n                1. Log in using your credentials.\n                2. Choose service: consultation, diagnostics, medicine delivery, etc.\n                3. Select a Healthcare Service Provider (HSP).\n                4. Choose available date and time slot.\n                5. Confirm appointment and make payment if necessary.\n                ",
+  "category": "procedures",
+  "tags": [
+    "procedure",
+    "appointments",
+    "workflow",
+    "steps",
+    "guide"
+  ],
+  "company_id": "caresetu",
+  "embedding": null,
+  "created_at": "2025-07-20 19:45:52.150372",
+  "updated_at": "2025-07-20 19:45:52.150374"
+}

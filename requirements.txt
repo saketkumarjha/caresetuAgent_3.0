@@ -1,0 +1,45 @@
+# LiveKit Agents Framework (following official docs pattern)
+livekit-agents[assemblyai,google,cartesia,elevenlabs,silero]~=1.0
+
+# Additional LiveKit dependencies
+livekit>=0.11.0
+
+# Database and caching
+psycopg2-binary>=2.9.0
+redis>=4.5.0
+
+# Environment management
+python-dotenv>=1.0.0
+
+# HTTP requests for API integrations
+httpx>=0.24.0
+aiohttp>=3.8.0
+
+# Data processing
+pydantic>=2.0.0
+dataclasses-json>=0.6.0
+
+# PDF Processing
+PyPDF2>=3.0.0
+pdfplumber>=0.9.0
+
+# NLP for intelligent document processing
+nltk>=3.8.0
+
+# Legacy vector database support (optional)
+pinecone-client>=2.2.0
+weaviate-client>=3.15.0
+
+# Text processing and search
+nltk>=3.8.0
+scikit-learn>=1.3.0
+
+# Google Calendar Integration
+google-auth>=2.17.0
+google-auth-oauthlib>=1.0.0
+google-auth-httplib2>=0.2.0
+google-api-python-client>=2.88.0
+pytz>=2023.3
+
+# Logging and monitoring
+structlog>=23.0.0

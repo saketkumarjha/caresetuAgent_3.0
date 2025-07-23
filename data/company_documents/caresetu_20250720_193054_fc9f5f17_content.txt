@@ -1,0 +1,29 @@
+
+--- Page 1 ---
+CareSetu - General Information
+Company Details:
+- Operated by: Akhil Systems Private Limited (ASPL)
+- Registered Office: #205-206, Vardhman Times Plaza, Plot No. 13, Rd No. 44,
+Pitampura Commercial Complex, New Delhi - 110034
+- Contact: saket@jha.com
+About the App:
+CareSetu is a digital healthcare application that connects users to healthcare service providers
+including clinics, hospitals, labs, and pharmacies for services such as consultations,
+diagnostics, medicine delivery, and care planning.
+User Roles:
+- Primary User: Adult, account holder.
+- Secondary User: Added by Primary User.
+- HSP Registered User: Linked with a healthcare provider, assigned UHID/UMR.
+- Non-Registered User: Limited access, no service bookings.
+Privacy Policy Highlights:
+- Data encrypted and stored on secure servers.
+- Information accessed only with consent or during service/support.
+- Complies with Indian data privacy regulations.
+Support and Escalation:
+- Email support: saket@jha.com
+- ASPL ensures qualified healthcare providers and service levels.
+Limitations:
+
+--- Page 2 ---
+- Use intended for residents in India.
+- Service availability varies by location and provider.

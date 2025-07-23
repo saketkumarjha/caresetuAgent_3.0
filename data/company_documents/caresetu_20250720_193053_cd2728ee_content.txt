@@ -1,0 +1,29 @@
+
+--- Page 1 ---
+CareSetu App - User Manual
+Section 1: Setup and Account Creation
+- Install the app via Play Store or App Store.
+- Register with accurate details as Primary User.
+- Add Secondary Users under your profile if needed.
+Section 2: App Navigation
+- Home: Quick access to records, reminders, and services.
+- Bookings: Schedule consultations, diagnostics, and medicine deliveries.
+- Health Records: Upload/view prescriptions, reports, and bills.
+Section 3: Online Services
+- Choose consultation mode.
+- Enter/update health records.
+- Interact with HSP professionals.
+- Receive digital prescriptions and follow-up guidance.
+Section 4: Records & Data
+- Access lab reports, prescriptions, and history via dashboard.
+- Set medicine reminders and health trackers.
+Section 5: Safety Guidelines
+- Use a personal, secure device.
+- Keep your login credentials confidential.
+- Log out after each session.
+Section 6: Troubleshooting
+- Connectivity issues: Check internet and app updates.
+
+--- Page 2 ---
+- Appointment not confirmed: Contact HSP or retry.
+- Still need help? Email: saket@jha.com

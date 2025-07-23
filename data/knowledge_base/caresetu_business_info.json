@@ -1,0 +1,17 @@
+{
+  "id": "caresetu_business_info",
+  "title": "CareSetu Business Information",
+  "content": "\n            CareSetu - Business Information\n            \n            Company Details:\n            - Operated by: Akhil Systems Private Limited (ASPL)\n            - Registered Office: #205-206, Vardhman Times Plaza, Plot No. 13, Rd No. 44,\n              Pitampura Commercial Complex, New Delhi - 110034\n            - Contact: saket@jha.com\n            \n            Business Hours:\n            - Digital Platform: Available 24/7\n            - Customer Support: Monday to Friday, 9:00 AM to 6:00 PM\n            - Healthcare Service Provider hours vary by provider\n            \n            Contact Information:\n            - Email: saket@jha.com\n            - Website: www.caresetu.com\n            - App: Available on Play Store and App Store\n            ",
+  "category": "general",
+  "tags": [
+    "business",
+    "hours",
+    "contact",
+    "company",
+    "information"
+  ],
+  "company_id": "caresetu",
+  "embedding": null,
+  "created_at": "2025-07-20 19:45:56.740413",
+  "updated_at": "2025-07-20 19:45:56.740415"
+}

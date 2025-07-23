@@ -1,0 +1,17 @@
+{
+  "id": "caresetu_procedure_4",
+  "title": "Cancellation Process",
+  "content": "\n                How to Cancel Appointments on CareSetu:\n                1. Go to the Bookings section in the app.\n                2. Find the appointment you wish to cancel.\n                3. Select the cancel option.\n                4. Provide a reason for cancellation if prompted.\n                5. Confirm cancellation.\n                \n                Note: Cancellations should be made at least 4 hours before the appointment to avoid cancellation fees.\n                ",
+  "category": "procedures",
+  "tags": [
+    "procedure",
+    "appointments",
+    "workflow",
+    "steps",
+    "guide"
+  ],
+  "company_id": "caresetu",
+  "embedding": null,
+  "created_at": "2025-07-20 19:45:55.710462",
+  "updated_at": "2025-07-20 19:45:55.710466"
+}

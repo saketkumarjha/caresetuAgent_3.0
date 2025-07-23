@@ -1,0 +1,17 @@
+{
+  "id": "caresetu_procedure_3",
+  "title": "Uploading Prescriptions",
+  "content": "\n                How to Upload Prescriptions on CareSetu:\n                1. Navigate to Health Records section.\n                2. Select \"Upload Prescription\" option.\n                3. Take a photo or upload an existing image of your prescription.\n                4. Add relevant details like doctor name and date.\n                5. Submit for processing.\n                ",
+  "category": "procedures",
+  "tags": [
+    "procedure",
+    "records",
+    "workflow",
+    "steps",
+    "guide"
+  ],
+  "company_id": "caresetu",
+  "embedding": null,
+  "created_at": "2025-07-20 19:45:54.810681",
+  "updated_at": "2025-07-20 19:45:54.810684"
+}

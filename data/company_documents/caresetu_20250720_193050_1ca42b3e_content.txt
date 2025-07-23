@@ -1,0 +1,30 @@
+
+--- Page 1 ---
+CareSetu Application - Procedures and Workflows
+1. Registration Process
+- Download and install the CareSetu App.
+- Register as a Primary User (adult, 18+).
+- Add Secondary Users if needed.
+- HSP Registered Users are assigned a UHID/UMR.
+2. Booking Appointments
+- Log in using your credentials.
+- Choose service: consultation, diagnostics, medicine delivery, etc.
+- Select a Healthcare Service Provider (HSP).
+- Confirm appointment and make payment if necessary.
+3. Uploading Prescriptions
+- Upload a clear, valid prescription.
+- Wait for verification by HSP.
+- HSP will confirm or cancel based on compliance.
+4. Online Consultation Process
+- Choose your preferred consultation mode (video/call/chat).
+- Provide medical history or take the self-assessment.
+- Complete session and receive prescription or diagnostic advice.
+5. Data Access and Security
+- All medical data stored on secure cloud services.
+- View and manage your health data through the app dashboard.
+- ASPL may review anonymized records for quality purposes.
+
+--- Page 2 ---
+6. Complaints and Feedback
+- Submit concerns through the in-app form or email (saket@jha.com).
+- ASPL may access your data to resolve issues.

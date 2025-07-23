@@ -1,0 +1,62 @@
+[
+  {
+    "title": "Business Hours",
+    "content": "Our business hours are Monday through Friday, 9:00 AM to 5:00 PM. We're closed on weekends and major holidays. For urgent matters outside business hours, please leave a message and we'll get back to you first thing the next business day.",
+    "category": "general",
+    "tags": [
+      "hours",
+      "schedule",
+      "availability",
+      "contact"
+    ]
+  },
+  {
+    "title": "Appointment Scheduling",
+    "content": "You can schedule appointments by calling us or through our online booking system. We typically need 24-48 hours notice for appointments. Same-day appointments may be available depending on our schedule. To reschedule or cancel, please give us at least 24 hours notice.",
+    "category": "scheduling",
+    "tags": [
+      "appointment",
+      "booking",
+      "schedule",
+      "cancel",
+      "reschedule"
+    ]
+  },
+  {
+    "title": "Payment and Billing",
+    "content": "We accept cash, check, and all major credit cards. Payment is due at the time of service unless other arrangements have been made. We send invoices via email and also accept online payments through our secure portal. If you have billing questions, please contact our office.",
+    "category": "billing",
+    "tags": [
+      "payment",
+      "billing",
+      "invoice",
+      "credit card",
+      "online payment"
+    ]
+  },
+  {
+    "title": "Cancellation Policy",
+    "content": "We require 24 hours notice for appointment cancellations. Cancellations with less than 24 hours notice may be subject to a cancellation fee. No-shows will be charged the full appointment fee. We understand emergencies happen, so please call us to discuss your situation.",
+    "category": "policy",
+    "tags": [
+      "cancellation",
+      "policy",
+      "fee",
+      "no-show",
+      "emergency"
+    ]
+  },
+  {
+    "title": "Technical Support",
+    "content": "For technical issues with our online systems, please try refreshing your browser or clearing your cache first. If problems persist, contact our support team with details about the issue, including what browser you're using and any error messages you see.",
+    "category": "technical",
+    "tags": [
+      "technical",
+      "support",
+      "online",
+      "browser",
+      "error",
+      "troubleshooting"
+    ]
+  }
+]

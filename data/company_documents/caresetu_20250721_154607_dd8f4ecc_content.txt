@@ -1,0 +1,21 @@
+
+--- Page 1 ---
+Frequently Asked Questions - CareSetu
+Q1: Who can use the CareSetu App?
+A: Any adult above 18 years old. Minors must be added under a Primary User account.
+Q2: Can I browse without registering?
+A: Yes. Non-registered users can browse, use the self-assessment tool, and share the app.
+Q3: What services does CareSetu offer?
+A: Services include online consultation, lab/sample collection, drug delivery, home therapies,
+post-surgery care, and more.
+Q4: Is my personal and medical data safe?
+A: Yes. Data is stored securely using encryption and strict privacy protocols.
+Q5: What happens if I upload an invalid prescription?
+A: HSP will cancel the order. Prescriptions must be valid and legible.
+Q6: Can I access CareSetu outside India?
+A: The app is intended for use within India only. ASPL does not ensure service availability outside.
+Q7: What is the refund policy?
+A: Once drugs are accepted, they cannot be exchanged or refunded.
+Q8: How is payment handled?
+A: Payment is online or via approved offline methods. Receipts are provided upon confirmation.
+

@@ -1,0 +1,17 @@
+{
+  "id": "caresetu_procedure_1",
+  "title": "Registration Process",
+  "content": "\n                Registration Process for CareSetu:\n                1. Download and install the CareSetu App from Play Store or App Store.\n                2. Register as a Primary User (must be an adult, 18+).\n                3. Add Secondary Users if needed (for family members).\n                4. HSP Registered Users are assigned a UHID/UMR.\n                ",
+  "category": "procedures",
+  "tags": [
+    "procedure",
+    "registration",
+    "workflow",
+    "steps",
+    "guide"
+  ],
+  "company_id": "caresetu",
+  "embedding": null,
+  "created_at": "2025-07-20 19:45:51.061015",
+  "updated_at": "2025-07-20 19:45:51.061017"
+}

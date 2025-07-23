@@ -1,0 +1,18 @@
+{
+  "id": "caresetu_services",
+  "title": "CareSetu Services",
+  "content": "\n            CareSetu Services\n            \n            Healthcare Services Available:\n            1. Online Consultations - Connect with doctors virtually\n            2. Lab/Diagnostic Services - Book tests and sample collection\n            3. Medicine Delivery - Order prescriptions for home delivery\n            4. Home Healthcare - Therapies and care at your home\n            5. Post-Surgery Care - Recovery support and follow-ups\n            \n            How to Access Services:\n            - Download the CareSetu App\n            - Register as a user\n            - Browse and select the service you need\n            - Choose a healthcare provider\n            - Book appointment or service\n            - Make payment if required\n            \n            Service Hours:\n            Digital platform is available 24/7, but actual service hours depend on the healthcare provider's availability.\n            ",
+  "category": "general",
+  "tags": [
+    "services",
+    "healthcare",
+    "consultation",
+    "diagnostics",
+    "medicine",
+    "delivery"
+  ],
+  "company_id": "caresetu",
+  "embedding": null,
+  "created_at": "2025-07-20 19:45:57.745176",
+  "updated_at": "2025-07-20 19:45:57.745182"
+}
