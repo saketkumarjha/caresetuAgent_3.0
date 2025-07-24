@@ -14,3 +14,4 @@ __pycache__/
 .gitignore
 *.md
 frontend-example/
+caresetuagent-frontend/
