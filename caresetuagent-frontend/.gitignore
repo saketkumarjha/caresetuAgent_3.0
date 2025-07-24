@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+echo ".env" >> .gitignore
+echo "config/credentials.json" >> .gitignore
+echo "config/token.json" >> .gitignore
+echo "config/" >> .gitignore
