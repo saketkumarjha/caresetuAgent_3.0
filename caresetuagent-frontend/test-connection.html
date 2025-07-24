@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LiveKit Connection Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .status {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+      }
+      .success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .error {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+      .info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+      }
+      button {
+        padding: 10px 20px;
+        margin: 5px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .btn-primary {
+        background-color: #007bff;
+        color: white;
+      }
+      .btn-danger {
+        background-color: #dc3545;
+        color: white;
+      }
+      #logs {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        height: 300px;
+        overflow-y: auto;
+        font-family: monospace;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>LiveKit Connection Test</h1>
+
+    <div id="status" class="status info">Ready to test connection</div>
+
+    <div>
+      <button id="connectBtn" class="btn-primary">Connect to Agent</button>
+      <button id="disconnectBtn" class="btn-danger" disabled>Disconnect</button>
+      <button id="clearLogsBtn">Clear Logs</button>
+    </div>
+
+    <h3>Configuration:</h3>
+    <ul>
+      <li><strong>LiveKit URL:</strong> <span id="livekitUrl"></span></li>
+      <li><strong>Room Name:</strong> <span id="roomName"></span></li>
+      <li><strong>User Identity:</strong> <span id="userIdentity"></span></li>
+    </ul>
+
+    <h3>Connection Logs:</h3>
+    <div id="logs"></div>
+
+    <script type="module">
+      import {
+        Room,
+        RoomEvent,
+        ConnectionState,
+      } from "https://unpkg.com/livekit-client@2.6.0/dist/livekit-client.esm.mjs";
+      import { SignJWT } from "https://unpkg.com/jose@5.9.6/dist/browser/index.js";
+
+      // Configuration
+      const LIVEKIT_URL = "wss://assemblyaiproject-2oo3ntng.livekit.cloud";
+      const API_KEY = "APIG5xywiyjDmBu";
+      const API_SECRET = "R5izbUJsSFu9rFtsslQDCQQcaEmciou1Xb8ZJRceenm";
+      const ROOM_NAME = "voice_agent_room";
+      const USER_IDENTITY = `test-user-${Date.now()}`;
+
+      // DOM elements
+      const statusEl = document.getElementById("status");
+      const connectBtn = document.getElementById("connectBtn");
+      const disconnectBtn = document.getElementById("disconnectBtn");
+      const clearLogsBtn = document.getElementById("clearLogsBtn");
+      const logsEl = document.getElementById("logs");
+
+      // Display configuration
+      document.getElementById("livekitUrl").textContent = LIVEKIT_URL;
+      document.getElementById("roomName").textContent = ROOM_NAME;
+      document.getElementById("userIdentity").textContent = USER_IDENTITY;
+
+      let room = null;
+
+      // Logging function
+      function log(message, type = "info") {
+        const timestamp = new Date().toLocaleTimeString();
+        const logEntry = document.createElement("div");
+        logEntry.innerHTML = `<span style="color: #666;">[${timestamp}]</span> ${message}`;
+        if (type === "error") logEntry.style.color = "#dc3545";
+        if (type === "success") logEntry.style.color = "#28a745";
+        logsEl.appendChild(logEntry);
+        logsEl.scrollTop = logsEl.scrollHeight;
+      }
+
+      // Generate LiveKit token
+      async function generateToken() {
+        try {
+          log("Generating LiveKit token...");
+
+          const now = Math.floor(Date.now() / 1000);
+          const exp = now + 24 * 60 * 60; // 24 hours
+
+          const payload = {
+            iss: API_KEY,
+            sub: USER_IDENTITY,
+            video: {
+              room: ROOM_NAME,
+              roomJoin: true,
+              canPublish: true,
+              canSubscribe: true,
+              canPublishData: true,
+            },
+            metadata: "Test User",
+          };
+
+          const secret = new TextEncoder().encode(API_SECRET);
+          const token = await new SignJWT(payload)
+            .setProtectedHeader({ alg: "HS256" })
+            .setIssuedAt(now)
+            .setExpirationTime(exp)
+            .sign(secret);
+
+          log("Token generated successfully", "success");
+          return token;
+        } catch (error) {
+          log(`Token generation failed: ${error.message}`, "error");
+          throw error;
+        }
+      }
+
+      // Connect to LiveKit
+      async function connect() {
+        try {
+          log("Starting connection process...");
+          statusEl.textContent = "Connecting...";
+          statusEl.className = "status info";
+          connectBtn.disabled = true;
+
+          // Generate token
+          const token = await generateToken();
+
+          // Create room
+          room = new Room();
+
+          // Set up event listeners
+          room.on(RoomEvent.Connected, () => {
+            log("✅ Connected to LiveKit room!", "success");
+            statusEl.textContent = "Connected to LiveKit room";
+            statusEl.className = "status success";
+            disconnectBtn.disabled = false;
+          });
+
+          room.on(RoomEvent.Disconnected, (reason) => {
+            log(`❌ Disconnected from room: ${reason}`, "error");
+            statusEl.textContent = "Disconnected";
+            statusEl.className = "status error";
+            connectBtn.disabled = false;
+            disconnectBtn.disabled = true;
+          });
+
+          room.on(RoomEvent.ParticipantConnected, (participant) => {
+            log(`👤 Participant connected: ${participant.identity}`, "success");
+          });
+
+          room.on(RoomEvent.ParticipantDisconnected, (participant) => {
+            log(`👤 Participant disconnected: ${participant.identity}`);
+          });
+
+          room.on(
+            RoomEvent.TrackSubscribed,
+            (track, publication, participant) => {
+              log(
+                `🎵 Track subscribed: ${track.kind} from ${participant.identity}`,
+                "success"
+              );
+            }
+          );
+
+          room.on(RoomEvent.DataReceived, (payload, participant) => {
+            const data = new TextDecoder().decode(payload);
+            log(
+              `📨 Data received from ${participant?.identity}: ${data}`,
+              "success"
+            );
+          });
+
+          room.on(RoomEvent.ConnectionStateChanged, (state) => {
+            log(`🔄 Connection state changed: ${state}`);
+          });
+
+          // Connect to room
+          log(`Connecting to ${LIVEKIT_URL} with room ${ROOM_NAME}...`);
+          await room.connect(LIVEKIT_URL, token);
+        } catch (error) {
+          log(`❌ Connection failed: ${error.message}`, "error");
+          statusEl.textContent = `Connection failed: ${error.message}`;
+          statusEl.className = "status error";
+          connectBtn.disabled = false;
+          disconnectBtn.disabled = true;
+        }
+      }
+
+      // Disconnect from LiveKit
+      async function disconnect() {
+        if (room) {
+          log("Disconnecting from room...");
+          await room.disconnect();
+          room = null;
+        }
+      }
+
+      // Event listeners
+      connectBtn.addEventListener("click", connect);
+      disconnectBtn.addEventListener("click", disconnect);
+      clearLogsBtn.addEventListener("click", () => {
+        logsEl.innerHTML = "";
+      });
+
+      // Initial log
+      log("LiveKit Connection Test initialized");
+      log(
+        `Backend agent should be running at: https://caresetuagent-3-0-2.onrender.com`
+      );
+      log('Click "Connect to Agent" to test the connection');
+    </script>
+  </body>
+</html>

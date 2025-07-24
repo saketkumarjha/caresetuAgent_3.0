@@ -1,0 +1,78 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches: [main, staging, development]
+    paths: ["caresetuagent-frontend/**"]
+  pull_request:
+    branches: [main]
+    paths: ["caresetuagent-frontend/**"]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: caresetuagent-frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./caresetuagent-frontend
+        run: npm ci
+
+      - name: Run linting
+        working-directory: ./caresetuagent-frontend
+        run: npm run lint
+
+      - name: Build for production
+        working-directory: ./caresetuagent-frontend
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            npm run build:production
+          elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
+            npm run build:staging
+          else
+            npm run build:dev
+          fi
+        env:
+          NODE_ENV: production
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-files-${{ matrix.node-version }}
+          path: caresetuagent-frontend/dist/
+          retention-days: 7
+
+      # Deploy to GitHub Pages (only on main branch and Node 18.x)
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main' && matrix.node-version == '18.x'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./caresetuagent-frontend/dist
+          cname: your-custom-domain.com # Optional: replace with your domain
+
+      # Deploy to Netlify (only on main branch and Node 18.x)
+      - name: Deploy to Netlify
+        if: github.ref == 'refs/heads/main' && matrix.node-version == '18.x'
+        uses: nwtgck/actions-netlify@v2.1
+        with:
+          publish-dir: "./caresetuagent-frontend/dist"
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}

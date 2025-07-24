@@ -853,6 +853,13 @@ class RAGEnhancedSession:
     async def _rag_enhanced_generate_reply(self, instructions: str = None, **kwargs):
         """Generate reply enhanced with RAG retrieval, conversation context, and learning capabilities."""
         try:
+            # Capture and send user speech transcript
+            user_query = self._extract_last_user_message()
+            if user_query and hasattr(self, 'send_transcript_to_frontend'):
+                try:
+                    await self.send_transcript_to_frontend("user_speech", user_query)
+                except Exception as e:
+                    logger.error(f"Error sending user transcript: {e}")
             # Check Google API rate limit
             if self.google_api_calls >= self.max_google_calls:
                 logger.warning(f"🚫 Google API limit reached ({self.google_api_calls}/{self.max_google_calls}). Using RAG-only mode.")
@@ -985,14 +992,41 @@ RESPONSE GUIDELINES:
                     if instructions and hasattr(self.session, 'chat_ctx') and self.session.chat_ctx:
                         self.session.chat_ctx.add_message(role="system", content=instructions)
                     
-                    return await self.original_generate_reply()
+                    response = await self.original_generate_reply()
+                    
+                    # Send agent response transcript to frontend
+                    if response and hasattr(self, 'send_transcript_to_frontend'):
+                        try:
+                            await self.send_transcript_to_frontend("agent_speech", response)
+                        except Exception as e:
+                            logger.error(f"Error sending agent transcript: {e}")
+                    
+                    return response
                 except Exception as e:
                     logger.error(f"❌ Google API call failed: {e}")
                     self.fallback_mode = True
-                    return "I'm here to help you with your healthcare needs. How can I assist you today?"
+                    fallback_response = "I'm here to help you with your healthcare needs. How can I assist you today?"
+                    
+                    # Send fallback response transcript
+                    if hasattr(self, 'send_transcript_to_frontend'):
+                        try:
+                            await self.send_transcript_to_frontend("agent_speech", fallback_response)
+                        except Exception as e:
+                            logger.error(f"Error sending fallback transcript: {e}")
+                    
+                    return fallback_response
             else:
                 # Fallback response when API limit reached
-                return "I'm here to help you with your healthcare needs. How can I assist you today?"
+                fallback_response = "I'm here to help you with your healthcare needs. How can I assist you today?"
+                
+                # Send fallback response transcript
+                if hasattr(self, 'send_transcript_to_frontend'):
+                    try:
+                        await self.send_transcript_to_frontend("agent_speech", fallback_response)
+                    except Exception as e:
+                        logger.error(f"Error sending fallback transcript: {e}")
+                
+                return fallback_response
                 
         except Exception as e:
             logger.error(f"❌ Error in RAG-enhanced generate_reply: {e}")
@@ -1044,6 +1078,16 @@ def prewarm_process(proc: WorkerOptions):
 async def entrypoint(ctx: JobContext):
     """Main entrypoint with improved connection handling and error recovery."""
     logger.info(f"🚀 Starting voice agent for room: {ctx.room.name}")
+    logger.info(f"👥 Participants in room: {ctx.room.num_participants}")
+    
+    # Log when participants join/leave
+    @ctx.room.on("participant_connected")
+    def on_participant_connected(participant):
+        logger.info(f"👤 Participant connected: {participant.identity}")
+    
+    @ctx.room.on("participant_disconnected") 
+    def on_participant_disconnected(participant):
+        logger.info(f"👤 Participant disconnected: {participant.identity}")
     
     # Verify configuration
     if not config:
@@ -1056,7 +1100,7 @@ async def entrypoint(ctx: JobContext):
         # Set session ID for conversation context
         agent.current_session_id = ctx.room.name or f"session_{ctx.room.sid}"
         
-        # Create session using the agent's components
+        # Create session using the agent's components with transcript handling
         session = AgentSession(
             stt=agent.stt,
             llm=agent.llm,
@@ -1065,8 +1109,37 @@ async def entrypoint(ctx: JobContext):
             allow_interruptions=agent.allow_interruptions,
         )
         
+        # Add transcript event handlers for real-time transcription
+        async def send_transcript_to_frontend(transcript_type: str, text: str):
+            """Helper function to send transcripts to frontend."""
+            try:
+                import json
+                transcript_data = {
+                    "type": transcript_type,
+                    "text": text,
+                    "timestamp": None
+                }
+                
+                await ctx.room.local_participant.publish_data(
+                    json.dumps(transcript_data).encode('utf-8')
+                )
+                logger.info(f"📝 Sent {transcript_type}: {text[:50]}...")
+                
+            except Exception as e:
+                logger.error(f"Error sending {transcript_type} transcript: {e}")
+        
+        # Override session methods to capture transcripts
+        original_on_user_speech = getattr(session, '_on_user_speech', None)
+        original_on_agent_response = getattr(session, '_on_agent_response', None)
+        
         # Create RAG-enhanced session wrapper
         rag_session = RAGEnhancedSession(session, agent)
+        
+        # Store the send function for use in RAG session
+        rag_session.send_transcript_to_frontend = send_transcript_to_frontend
+        
+        # Add room context for transcript sending
+        rag_session.room_context = ctx.room
         
         # Connect to the room with timeout and retry logic
         connection_timeout = 15  # Increased from default 10 seconds
@@ -1129,6 +1202,17 @@ async def entrypoint(ctx: JobContext):
 def main():
     """Main function to run the voice agent."""
     logger.info("🎯 CareSetu Voice Agent with Appointment Booking Starting...")
+    
+    # Start token server for frontend integration
+    try:
+        from .token_server import TokenServer
+        token_server = TokenServer(port=int(os.getenv('PORT', 8080)))
+        if token_server.start():
+            logger.info("✅ Token server started for frontend integration")
+        else:
+            logger.warning("⚠️ Token server failed to start - frontend may not work")
+    except Exception as e:
+        logger.warning(f"⚠️ Could not start token server: {e}")
     
     # Run with LiveKit CLI using standalone entrypoint
     cli.run_app(WorkerOptions(
