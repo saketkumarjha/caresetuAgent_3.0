@@ -1,14 +1,12 @@
-# Railway Ignore File - Optimize build time and size
+# Railway Ignore File - Clean and Minimal
 
 # Development and documentation files
 *.md
-README.md
 docs/
 tests/
 scripts/
 
 # Original heavy files (use Railway optimized versions)
-requirements.txt
 Dockerfile
 docker-compose.yml
 
@@ -23,14 +21,18 @@ knowledge/storage/embedding_cache.py
 knowledge/engines/semantic_search.py
 knowledge/managers/knowledge_base_semantic.py
 
-# Deployment scripts
+# Deployment scripts and utilities
 livekit_cloud_deploy.py
 deploy_to_livekit.py
 verify_structure.py
 test_tts_simple.py
+deploy.bat
+
+# Other deployment configs
+render.yaml
+RENDER_DEPLOYMENT.md
 
 # Environment files (Railway uses env vars)
-.env
 .env.example
 
 # Cache and build artifacts
@@ -64,7 +66,8 @@ venv/
 env/
 ENV/
 
-# Note: Railway automatically ignores frontend directories like:
-# - caresetuagent-frontend/ (detected as separate Node.js project)
-# - frontend-example/ (not part of Python build)
-# - node_modules/ (Node.js specific)
+# Temporary and data directories
+temp/
+chroma_db/
+data/
+learned_knowledge/

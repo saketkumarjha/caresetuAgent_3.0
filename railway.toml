@@ -1,7 +1,3 @@
-[build]
-builder = "DOCKERFILE"
-dockerfilePath = "Dockerfile.railway"
-
 [deploy]
 startCommand = "python src/agent_railway.py"
 restartPolicyType = "ON_FAILURE"
