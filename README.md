@@ -25,6 +25,7 @@ An AI-powered healthcare voice assistant with real-time appointment booking, RAG
 
 ```
 caresetuAgent/
+├── careSetuFrontend                  #frontend part
 ├── src/                              # Main source code
 │   ├── agent.py                      # Main voice agent
 │   ├── config.py                     # Configuration management
