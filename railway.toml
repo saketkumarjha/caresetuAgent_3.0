@@ -1,0 +1,21 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile.railway"
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+[env]
+# Railway will inject these automatically, but you can set defaults
+PORT = "8080"
+RAILWAY_ENVIRONMENT = "production"
+
+# Required environment variables (set these in Railway dashboard):
+# LIVEKIT_URL = "your_livekit_url"
+# LIVEKIT_API_KEY = "your_api_key" 
+# LIVEKIT_API_SECRET = "your_secret"
+# ASSEMBLYAI_API_KEY = "your_assemblyai_key"
+# GOOGLE_API_KEY = "your_google_key"

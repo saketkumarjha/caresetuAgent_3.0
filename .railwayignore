@@ -1,0 +1,70 @@
+# Railway Ignore File - Optimize build time and size
+
+# Development and documentation files
+*.md
+README.md
+docs/
+tests/
+scripts/
+
+# Original heavy files (use Railway optimized versions)
+requirements.txt
+Dockerfile
+docker-compose.yml
+
+# Original agent files (use Railway optimized versions)
+src/agent.py
+src/config.py
+src/core/stt_config.py
+src/core/conversation_learning.py
+
+# Heavy dependencies not needed for Railway
+knowledge/storage/embedding_cache.py
+knowledge/engines/semantic_search.py
+knowledge/managers/knowledge_base_semantic.py
+
+# Deployment scripts
+livekit_cloud_deploy.py
+deploy_to_livekit.py
+verify_structure.py
+test_tts_simple.py
+
+# Environment files (Railway uses env vars)
+.env
+.env.example
+
+# Cache and build artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.coverage
+.pytest_cache/
+.mypy_cache/
+build/
+dist/
+*.egg-info/
+
+# IDE and OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Note: Railway automatically ignores frontend directories like:
+# - caresetuagent-frontend/ (detected as separate Node.js project)
+# - frontend-example/ (not part of Python build)
+# - node_modules/ (Node.js specific)
