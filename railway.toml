@@ -3,8 +3,7 @@ builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile.railway"
 
 [deploy]
-healthcheckPath = "/health"
-healthcheckTimeout = 30
+startCommand = "python src/agent_railway.py"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
 

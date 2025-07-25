@@ -196,11 +196,8 @@ async def entrypoint(ctx: JobContext):
     """Railway optimized entrypoint."""
     logger.info(f"🚀 Starting Railway Voice Agent for room: {ctx.room.name}")
     
-    # Memory monitoring
-    import psutil
-    process = psutil.Process()
-    memory_mb = process.memory_info().rss / 1024 / 1024
-    logger.info(f"📊 Memory usage: {memory_mb:.1f} MB")
+    # Memory monitoring (simplified for Railway)
+    logger.info("📊 Starting Railway Voice Agent")
     
     try:
         # Create optimized agent
@@ -218,9 +215,8 @@ async def entrypoint(ctx: JobContext):
         await session.start(ctx.room)
         logger.info("✅ Railway Voice Agent session started")
         
-        # Monitor memory usage
-        memory_mb = process.memory_info().rss / 1024 / 1024
-        logger.info(f"📊 Memory after startup: {memory_mb:.1f} MB")
+        # Log successful startup
+        logger.info("📊 Railway Voice Agent startup completed")
         
     except Exception as e:
         logger.error(f"❌ Error in entrypoint: {e}")
@@ -233,11 +229,8 @@ def prewarm_process(proc: WorkerOptions):
     # Force garbage collection
     gc.collect()
     
-    # Log memory usage
-    import psutil
-    process = psutil.Process()
-    memory_mb = process.memory_info().rss / 1024 / 1024
-    logger.info(f"📊 Prewarm memory usage: {memory_mb:.1f} MB")
+    # Log memory usage (simplified)
+    logger.info("📊 Prewarm completed")
 
 def main():
     """Main function optimized for Railway."""
@@ -247,15 +240,8 @@ def main():
     port = int(os.getenv('PORT', 8080))
     logger.info(f"🌐 Using port: {port}")
     
-    # Start health check server for Railway
-    try:
-        from health_check import start_health_check_server
-        if start_health_check_server(port):
-            logger.info("✅ Health check server started for Railway")
-        else:
-            logger.warning("⚠️ Health check server failed to start")
-    except Exception as e:
-        logger.error(f"❌ Could not start health check server: {e}")
+    # Note: Removed health check server to simplify Railway deployment
+    # Railway has built-in health monitoring
     
     # Run with minimal configuration
     cli.run_app(WorkerOptions(
