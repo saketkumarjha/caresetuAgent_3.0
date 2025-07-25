@@ -26,25 +26,25 @@ function ErrorDisplay({ error, errorType, onClear }) {
   const baseClasses =
     "px-4 py-3 rounded-lg mb-4 shadow-md transition-all duration-300";
   const warningClasses =
-    "bg-yellow-100 border border-yellow-400 text-yellow-800";
-  const errorClasses = "bg-red-100 border border-red-400 text-red-700";
-  const criticalClasses = "bg-red-200 border-2 border-red-500 text-red-800";
+    "bg-yellow-900 border border-yellow-600 text-yellow-200";
+  const errorClasses = "bg-red-900 border border-red-600 text-red-200";
+  const criticalClasses = "bg-red-800 border-2 border-red-500 text-red-100";
 
   let containerClasses = baseClasses;
-  let iconColor = "text-red-500";
+  let iconColor = "text-red-400";
   let icon = "⚠️";
 
   if (isWarning) {
     containerClasses += ` ${warningClasses}`;
-    iconColor = "text-yellow-500";
+    iconColor = "text-yellow-400";
     icon = "⚠️";
   } else if (isCritical) {
     containerClasses += ` ${criticalClasses}`;
-    iconColor = "text-red-600";
+    iconColor = "text-red-300";
     icon = "🚫";
   } else {
     containerClasses += ` ${errorClasses}`;
-    iconColor = "text-red-500";
+    iconColor = "text-red-400";
     icon = "⚠️";
   }
 
@@ -69,7 +69,7 @@ function ErrorDisplay({ error, errorType, onClear }) {
         {!isCritical && onClear && (
           <button
             onClick={onClear}
-            className="ml-4 text-gray-500 hover:text-gray-700 transition-colors duration-200"
+            className="ml-4 text-gray-400 hover:text-gray-200 transition-colors duration-200"
             aria-label="Close error message"
           >
             <svg

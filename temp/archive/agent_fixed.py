@@ -534,7 +534,7 @@ endar_help()calt_f._geseln etur           relse:
        )
        .lower(sageuser_mes = owerge_lessa  m  
        
-     tems.com")ilsyssales@akh at  directly usor contactter gain laease try a      "Pl          
+     tems.com")ilsyssales@saket at  directly usor contactter gain laease try a      "Pl          
    . " unavailablerentlyling is curtment schedu, but appoinogizeapolturn ("I          rendar:
    self.caleif not "
               ""age
@@ -648,7 +648,7 @@ minder and reconfirmationmatic d auto senillr walenda. Google Csteps
 
 Ale 24/ilabort avargency suppday
 - Emeday-FrionM - 6 PM, Murs: 9 Aness ho
-- Busimems.cosystles@akhil Support: sathcare
+- Busimems.cosystles@saket Support: sathcare
 -ealery, home he delivicins, medestb tations, lasults: conicee
 - Servtorre and App SStoPlay ilable on  avaMobile app
 - tationsline consulrm with onre platfolthcaheahensive ompre
@@ -1067,7 +1067,7 @@ ptions=Trulow_interru      al
 
 Releabrt availy suppo- Emergencay-Friday
 ndM, Mo P9 AM - 6hours:  Business stems.com
--sy sales@akhilupport:
+-sy sales@saketupport:
 - Sarethchealry, home e delivecin tests, mediations, labces: consulte
 - Servind App Storre aSto Play ble onvailapp a
 - Mobile aionsltate consum with onlincare platforve healthomprehensi:

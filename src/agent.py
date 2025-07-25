@@ -88,6 +88,13 @@ PERSONALITY & TONE:
 - Clear and concise communication
 - Warm but not overly casual
 
+SPEECH OPTIMIZATION:
+- Use simple, clear language that's easy for text-to-speech to pronounce
+- Avoid technical jargon, abbreviations, and acronyms unless necessary
+- Spell out numbers and dates clearly (e.g., "twenty-five" not "25")
+- Use full words instead of contractions when possible for clarity
+- Avoid special characters, markdown formatting, or complex punctuation
+
 CORE CAPABILITIES:
 1. HEALTHCARE GUIDANCE: Answer health-related questions using company documents
 2. APP SUPPORT: Help with careSetu app navigation
@@ -123,6 +130,14 @@ APPOINTMENT BOOKING PROCESS:
 4. Book the appointment in Google Calendar
 5. Confirm booking details and next steps
 6. Google Calendar will send automatic confirmation and reminders
+
+SPEECH OUTPUT GUIDELINES:
+- Use clear, natural speech patterns
+- Avoid technical jargon and abbreviations
+- Spell out acronyms (API as "A P I", URL as "U R L")
+- Use full words instead of abbreviations (application instead of app)
+- Avoid special characters and formatting in speech
+- Keep sentences conversational and easy to understand
 
 Remember: You're representing careSetu with full appointment booking capabilities. Be efficient and helpful while maintaining professionalism.""",
             chat_ctx=business_context,
@@ -171,45 +186,37 @@ Remember: You're representing careSetu with full appointment booking capabilitie
             self.calendar = None
     
     def _create_tts(self):
-        """Create TTS service with Silero as primary (most reliable) and proper fallbacks."""
-        # Start with Silero TTS as primary (free, local, no connection issues)
-        try:
-            logger.info("🔊 Initializing Silero TTS (primary - reliable and local)")
-            return silero.TTS()
-        except Exception as e:
-            logger.warning(f"Silero TTS failed, trying Google TTS: {e}")
+        """Create TTS service with Cartesia as primary and Google TTS as fallback, wrapped with text refinement."""
+        base_tts = None
         
-        # Fallback to Google TTS as it's reliable and free
-        try:
-            logger.info("🔊 Initializing Google TTS (fallback - reliable)")
-            return google.TTS(
-                voice="en-US-Neural2-F",  # Professional female voice
-                speed=1.0,
-                pitch=0.0,
-            )
-        except Exception as e:
-            logger.warning(f"Google TTS failed, trying Cartesia: {e}")
-        
-        # Try Cartesia as secondary (it's having connection issues)
+        # Try Cartesia first with new API key
         if hasattr(config, 'cartesia') and config.cartesia.api_key and config.cartesia.api_key.startswith("sk_car_"):
             try:
-                logger.info("🔊 Initializing Cartesia TTS (secondary - fast and high quality)")
-                return cartesia.TTS(
+                logger.info("🔊 Initializing Cartesia TTS (primary - fast and high quality)")
+                base_tts = cartesia.TTS(
                     api_key=config.cartesia.api_key,
-                    model="sonic-turbo",
+                    model="sonic-2",  # Updated to sonic-2 as per your curl example
                     voice="bf0a246a-8642-498a-9950-80c35e9276b5",
                     language="en",
                 )
             except Exception as e:
-                logger.warning(f"Cartesia TTS failed, trying ElevenLabs: {e}")
+                logger.warning(f"Cartesia TTS failed, trying Google TTS: {e}")
         
-        # Try ElevenLabs as tertiary fallback if API key is available and valid
-        if (hasattr(config, 'elevenlabs') and config.elevenlabs.api_key and 
+        # Fallback to Google TTS (free, reliable, no API limits)
+        if not base_tts:
+            try:
+                logger.info("🔊 Initializing Google TTS (fallback - reliable and free)")
+                base_tts = google.TTS()
+            except Exception as e:
+                logger.warning(f"Google TTS failed: {e}")
+        
+        # Try ElevenLabs as last resort if API key is available and valid
+        if not base_tts and (hasattr(config, 'elevenlabs') and config.elevenlabs.api_key and 
             config.elevenlabs.api_key != "ELEVENLABS_API_KEY" and
             len(config.elevenlabs.api_key) > 10):
             try:
-                logger.info("🔊 Initializing ElevenLabs TTS (tertiary fallback)")
-                return elevenlabs.TTS(
+                logger.info("🔊 Initializing ElevenLabs TTS (last resort)")
+                base_tts = elevenlabs.TTS(
                     api_key=config.elevenlabs.api_key,
                     voice="21m00Tcm4TlvDq8ikWAM",
                     model="eleven_turbo_v2",
@@ -220,14 +227,17 @@ Remember: You're representing careSetu with full appointment booking capabilitie
             except Exception as e:
                 logger.warning(f"ElevenLabs TTS failed: {e}")
         
-        # Final fallback to basic Google TTS
-        logger.info("🔊 Using basic Google TTS (final fallback)")
-        try:
-            return google.TTS(voice="en-US-Standard-A")
-        except Exception as e:
-            logger.error(f"All TTS services failed: {e}")
-            # Last resort - basic Silero
-            return silero.TTS(model="v3_en")
+        # If all else fails, raise an error
+        if not base_tts:
+            raise RuntimeError("No TTS service available. Please check your API keys or try again later.")
+        
+        # Use base TTS without wrapper for now to ensure connection works
+        logger.info("🔧 Using base TTS for reliable connection")
+        return base_tts
+    
+
+    
+
     
     def _create_business_context(self) -> llm.ChatContext:
         """Create chat context with business-specific instructions."""
@@ -1170,19 +1180,25 @@ async def entrypoint(ctx: JobContext):
         )
         
         # Generate initial greeting with error handling
+        logger.info("🎤 Attempting to generate initial greeting...")
         try:
             # Add greeting instruction to chat context
             if hasattr(session, 'chat_ctx') and session.chat_ctx:
+                logger.info("🎤 Adding greeting instruction to chat context")
                 session.chat_ctx.add_message(
                     role="system", 
                     content="Greet the customer professionally as a careSetu healthcare assistant with appointment booking capabilities and ask how you can help them today."
                 )
+            logger.info("🎤 Generating LLM-based greeting...")
             await session.generate_reply()
+            logger.info("✅ LLM-based greeting generated successfully")
         except Exception as e:
             logger.warning(f"Initial greeting failed: {e}")
             # Fallback greeting without LLM
+            logger.info("🎤 Attempting fallback greeting...")
             try:
                 await session.say("Hello! I'm your careSetu healthcare assistant with appointment booking capabilities. How can I help you today?")
+                logger.info("✅ Fallback greeting delivered successfully")
             except Exception as fallback_error:
                 logger.error(f"Even fallback greeting failed: {fallback_error}")
         
@@ -1205,20 +1221,30 @@ def main():
     
     # Start token server for frontend integration
     try:
-        from .token_server import TokenServer
-        token_server = TokenServer(port=int(os.getenv('PORT', 8080)))
+        # Try different import paths depending on where we're running from
+        try:
+            from src.token_server import TokenServer
+        except ImportError:
+            # If running from src directory, try relative import
+            from token_server import TokenServer
+        
+        token_server = TokenServer(port=int(os.getenv('TOKEN_SERVER_PORT', 8080)))
         if token_server.start():
             logger.info("✅ Token server started for frontend integration")
         else:
             logger.warning("⚠️ Token server failed to start - frontend may not work")
     except Exception as e:
-        logger.warning(f"⚠️ Could not start token server: {e}")
+        logger.error(f"❌ Could not start token server: {e}")
     
     # Run with LiveKit CLI using standalone entrypoint
     cli.run_app(WorkerOptions(
         entrypoint_fnc=entrypoint,
         prewarm_fnc=prewarm_process,
     ))
+
+
+if __name__ == "__main__":
+    main()
 
 
 if __name__ == "__main__":

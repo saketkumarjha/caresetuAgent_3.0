@@ -199,7 +199,7 @@ class CareSetuKnowledgeEnhancer:
             CareSetu - Business Information
             
             Company Details:
-            - Operated by: Akhil Systems Private Limited (ASPL)
+            - Operated by: saket Systems Private Limited (ASPL)
             - Registered Office: #205-206, Vardhman Times Plaza, Plot No. 13, Rd No. 44,
               Pitampura Commercial Complex, New Delhi - 110034
             - Contact: saket@jha.com

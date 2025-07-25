@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-import Header from "./components/Header";
+import { useState, useEffect, useCallback, useRef } from "react";
+
 import VoiceInterface from "./components/VoiceInterface";
 import ErrorDisplay from "./components/ErrorDisplay";
 import DebugPanel from "./components/DebugPanel";
@@ -12,6 +12,7 @@ import { useReconnection } from "./hooks/useReconnection";
 
 function App() {
   const [transcript, setTranscript] = useState([]);
+  const disconnectionMessageAdded = useRef(false);
 
   // Initialize all custom hooks with error boundaries
   const {
@@ -437,8 +438,12 @@ function App() {
 
   // Handle cleanup when disconnecting
   useEffect(() => {
-    if (!isConnected && transcript.length > 0) {
-      // Add disconnection message
+    if (
+      !isConnected &&
+      transcript.length > 0 &&
+      !disconnectionMessageAdded.current
+    ) {
+      // Add disconnection message only once
       const timestamp = new Date().toLocaleTimeString();
       setTranscript((prev) => [
         ...prev,
@@ -448,8 +453,12 @@ function App() {
           timestamp,
         },
       ]);
+      disconnectionMessageAdded.current = true;
+    } else if (isConnected) {
+      // Reset the flag when connected
+      disconnectionMessageAdded.current = false;
     }
-  }, [isConnected, transcript.length, setTranscript]);
+  }, [isConnected, transcript.length]);
 
   // Handle connection establishment
   const handleConnect = useCallback(async () => {
@@ -688,10 +697,8 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
-      <Header />
-
-      <main className="flex-1 container mx-auto p-4">
+    <div className="min-h-screen bg-gray-900">
+      <main className="min-h-screen">
         <VoiceInterface
           // Connection props
           connectionStatus={getConnectionStatus()}
@@ -730,8 +737,6 @@ function App() {
           onClear={clearError}
         />
       </main>
-
-      <DebugPanel />
     </div>
   );
 }
