@@ -82,7 +82,7 @@ This guide will help you deploy your CareSetu Voice Agent on AWS EC2 with Nginx 
 
    ```bash
    cd /opt
-   sudo git clone https://github.com/your-username/caresetuAgent_3.0.git
+   sudo git clone https://github.com/saketkumarjha/caresetuAgent_3.0.git
    sudo chown -R ubuntu:ubuntu caresetuAgent_3.0
    cd caresetuAgent_3.0
    ```
