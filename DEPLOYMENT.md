@@ -14,14 +14,35 @@ This guide will help you deploy your CareSetu Voice Agent on AWS EC2 with Nginx 
 
 1. **Create EC2 Instance:**
 
-   - Instance Type: `t3.medium` or higher (recommended for voice processing)
+   **Production-Ready Configuration (Recommended):**
+
+   - Instance Type: `c5.large` (~$70/month - 4GB RAM, 2 vCPU dedicated)
    - AMI: Ubuntu 22.04 LTS
    - Storage: 20GB+ SSD
+   - Security Group: Allow ports 22 (SSH), 80 (HTTP), 443 (HTTPS), 8000 (app)
+   - Good for: 10-20 concurrent users with excellent performance
+
+   **Why c5.large is optimal for voice agents:**
+
+   - CPU-optimized for real-time audio processing
+   - Dedicated CPU (no throttling like burstable instances)
+   - Consistent performance under load
+   - Better network performance for WebRTC
+
+   **Production Option:**
+
+   - Instance Type: `c5.large` (~$70/month - 4GB RAM, 2 vCPU dedicated)
+   - Good for: 10+ concurrent users, consistent performance
+
+   **Common Settings:**
+
+   - AMI: Ubuntu 22.04 LTS
+   - Storage: 20GB SSD
    - Security Group: Allow ports 22 (SSH), 80 (HTTP), 443 (HTTPS), 8000 (app)
 
 2. **Connect to Instance:**
    ```bash
-   ssh -i your-key.pem ubuntu@your-ec2-ip
+   ssh -i caresetu-agent-key.pem ubuntu@13.218.39.10
    ```
 
 ### 2. Server Setup
@@ -46,6 +67,13 @@ This guide will help you deploy your CareSetu Voice Agent on AWS EC2 with Nginx 
 
    # Install system dependencies for audio processing
    sudo apt install ffmpeg portaudio19-dev -y
+
+   # Free Tier Optimization: Add swap space for 1GB RAM
+   sudo fallocate -l 1G /swapfile
+   sudo chmod 600 /swapfile
+   sudo mkswap /swapfile
+   sudo swapon /swapfile
+   echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
    ```
 
 ### 3. Application Deployment
@@ -98,8 +126,9 @@ This guide will help you deploy your CareSetu Voice Agent on AWS EC2 with Nginx 
    ```nginx
    server {
        listen 80;
-       server_name your-domain.com;  # Replace with your domain or EC2 IP
+       server_name 13.218.39.10;  # Your EC2 instance IP
 
+       # Optimized for c5.large performance
        location / {
            proxy_pass http://127.0.0.1:8000;
            proxy_http_version 1.1;
@@ -111,6 +140,17 @@ This guide will help you deploy your CareSetu Voice Agent on AWS EC2 with Nginx 
            proxy_set_header X-Forwarded-Proto $scheme;
            proxy_cache_bypass $http_upgrade;
            proxy_read_timeout 86400;
+
+           # c5.large optimizations for voice processing
+           proxy_buffering off;
+           proxy_request_buffering off;
+           proxy_max_temp_file_size 0;
+           client_max_body_size 50M;
+
+           # Enhanced timeouts for voice sessions
+           proxy_connect_timeout 60s;
+           proxy_send_timeout 60s;
+           proxy_read_timeout 300s;
        }
    }
    ```
@@ -186,7 +226,55 @@ This guide will help you deploy your CareSetu Voice Agent on AWS EC2 with Nginx 
 
 3. **Test Application:**
    ```bash
-   curl http://your-domain.com/health
+   curl http://13.218.39.10/health
+   ```
+
+## c5.large Performance Optimizations
+
+### **Expected Performance with c5.large:**
+
+- ✅ **10-20 concurrent users** comfortably
+- ✅ **Voice recognition latency**: 200-500ms
+- ✅ **AI response time**: 1-3 seconds
+- ✅ **No CPU throttling** (dedicated CPU)
+- ✅ **Consistent performance** under load
+
+### **System Optimizations:**
+
+1. **Enable Enhanced Networking:**
+
+   ```bash
+   # Check if enhanced networking is enabled
+   aws ec2 describe-instances --instance-ids i-your-instance-id --query 'Reservations[].Instances[].EnaSupport'
+   ```
+
+2. **Optimize TCP Settings:**
+
+   ```bash
+   # Add to /etc/sysctl.conf for better network performance
+   echo "net.core.rmem_max = 16777216" | sudo tee -a /etc/sysctl.conf
+   echo "net.core.wmem_max = 16777216" | sudo tee -a /etc/sysctl.conf
+   echo "net.ipv4.tcp_rmem = 4096 87380 16777216" | sudo tee -a /etc/sysctl.conf
+   echo "net.ipv4.tcp_wmem = 4096 65536 16777216" | sudo tee -a /etc/sysctl.conf
+   sudo sysctl -p
+   ```
+
+3. **Python Process Optimization:**
+
+   ```bash
+   # Update systemd service for better performance
+   sudo nano /etc/systemd/system/caresetu-agent.service
+   ```
+
+   Add these optimizations:
+
+   ```ini
+   [Service]
+   # ... existing config ...
+   Environment=PYTHONUNBUFFERED=1
+   Environment=PYTHONOPTIMIZE=1
+   LimitNOFILE=65536
+   CPUQuota=180%  # Allow using both CPU cores effectively
    ```
 
 ## Monitoring & Maintenance
@@ -213,10 +301,15 @@ This guide will help you deploy your CareSetu Voice Agent on AWS EC2 with Nginx 
    sudo apt install htop iotop -y
    ```
 
-2. **Monitor Resources:**
+2. **Monitor Resources (Critical for Free Tier):**
+
    ```bash
    htop  # CPU and memory usage
    df -h # Disk usage
+   free -h # Memory and swap usage
+
+   # Check CPU credits (important for t3.micro)
+   aws cloudwatch get-metric-statistics --namespace AWS/EC2 --metric-name CPUCreditBalance --dimensions Name=InstanceId,Value=i-1234567890abcdef0 --start-time 2023-01-01T00:00:00Z --end-time 2023-01-01T23:59:59Z --period 3600 --statistics Average
    ```
 
 ### Backup Strategy
