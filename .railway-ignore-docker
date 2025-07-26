@@ -1,0 +1,2 @@
+# This file forces Railway to ignore Docker detection
+# Railway should use Python/Nixpacks instead

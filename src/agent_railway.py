@@ -1,21 +1,24 @@
 """
-Railway Optimized Voice Agent - Minimal Memory Footprint
-Optimized for Railway's 512MB RAM + 1 vCPU free tier
+Railway Optimized Voice Agent - Production Ready
+Optimized for Railway deployment with auto-scaling support
 """
 
 import asyncio
 import logging
 import os
 import gc
-from typing import Optional, List
-from datetime import datetime, timedelta
-from livekit.agents import AutoSubscribe, JobContext, WorkerOptions, cli, llm, AgentSession, Agent
+from typing import Optional
+from livekit.agents import JobContext, WorkerOptions, cli, AgentSession, Agent
 from livekit.plugins import assemblyai, google
 from livekit import rtc
 import sys
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+import uvicorn
+import threading
 
-# Memory optimization
-gc.set_threshold(700, 10, 10)  # More aggressive garbage collection
+# Memory optimization for Railway
+gc.set_threshold(700, 10, 10)
 
 # Add current directory to path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -27,11 +30,13 @@ if parent_dir not in sys.path:
 try:
     from config_railway import config
     from core.stt_config_railway import create_assemblyai_stt
-    from knowledge.engines.simple_search_engine import SimpleSearchEngine
-    from integrations.google_calendar_integration import GoogleCalendarIntegration
 except ImportError as e:
     logging.error(f"Import error: {e}")
-    sys.exit(1)
+    # Create minimal fallback config
+    class FallbackConfig:
+        def __init__(self):
+            self.railway = type('obj', (object,), {'port': int(os.getenv('PORT', 8080))})()
+    config = FallbackConfig()
 
 # Configure logging for Railway
 logging.basicConfig(
@@ -41,78 +46,72 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class RailwayVoiceAgent(Agent):
-    """Memory-optimized voice agent for Railway deployment."""
+    """Production-ready voice agent for Railway deployment."""
     
     def __init__(self):
-        """Initialize with minimal memory footprint."""
+        """Initialize with Railway optimizations."""
         if not config:
             raise ValueError("Configuration not loaded. Check environment variables.")
         
-        # Limit concurrent sessions for free tier
-        self.max_concurrent_sessions = 1
+        # Railway auto-scaling friendly
+        self.max_concurrent_sessions = 3  # Railway can handle more
         self.current_sessions = 0
         
-        # Initialize STT (lightweight)
+        # Initialize STT
         stt = create_assemblyai_stt()
-        logger.info("✅ AssemblyAI STT initialized (Railway optimized)")
+        logger.info("✅ AssemblyAI STT initialized")
         
-        # Initialize LLM (Google Gemini - free tier friendly)
+        # Initialize LLM (Google Gemini)
         llm_instance = google.LLM(
             model="gemini-1.5-flash",
-            api_key=config.google.api_key,
-            temperature=0.6,  # Slightly lower for consistency
+            api_key=os.getenv('GOOGLE_API_KEY'),
+            temperature=0.7,
         )
         logger.info("✅ Google Gemini LLM initialized")
         
-        # Initialize TTS (Google only - free and reliable)
+        # Initialize TTS
         tts = google.TTS()
-        logger.info("✅ Google TTS initialized (free tier)")
+        logger.info("✅ Google TTS initialized")
         
-        # Initialize lightweight search engine (no vector DB)
-        self.search_engine = SimpleSearchEngine()
-        logger.info("✅ Simple search engine initialized")
-        
-        # Initialize calendar (optional)
-        try:
-            self.calendar = GoogleCalendarIntegration()
-            logger.info("✅ Google Calendar integration initialized")
-        except Exception as e:
-            logger.warning(f"Calendar integration failed: {e}")
-            self.calendar = None
-        
-        # Initialize Agent with minimal context
+        # Initialize Agent
         super().__init__(
-            instructions=self._create_minimal_context(),
+            instructions=self._create_system_prompt(),
             stt=stt,
             llm=llm_instance,
             tts=tts,
-            vad=None,  # Disable VAD to save memory
-            allow_interruptions=False,  # Simplify for free tier
+            allow_interruptions=True,
         )
         
         logger.info("🚀 Railway Voice Agent initialized successfully")
     
-    def _create_minimal_context(self) -> str:
-        """Create lightweight system prompt."""
-        return """You are CareSetu healthcare voice assistant.
+    def _create_system_prompt(self) -> str:
+        """Create optimized system prompt for Railway."""
+        return """You are CareSetu's AI healthcare assistant, deployed on Railway cloud platform.
 
-CORE FUNCTIONS:
-- Answer healthcare questions clearly and professionally
-- Help with appointment scheduling
-- Provide app support
+CORE CAPABILITIES:
+- Healthcare consultation support
+- Appointment scheduling assistance  
+- Medical information guidance
+- CareSetu app support
 
-GUIDELINES:
-- Keep responses concise and helpful
-- Ask for clarification when needed
-- Be professional and friendly
-- For appointments: get name, email, preferred time
+INTERACTION STYLE:
+- Professional yet friendly tone
+- Clear, concise responses
+- Ask clarifying questions when needed
+- Provide actionable guidance
 
-LIMITATIONS:
-- One conversation at a time
-- Basic appointment booking only
-- Simple Q&A support
+HEALTHCARE FOCUS:
+- General health information
+- Symptom assessment guidance
+- Medication reminders
+- Wellness tips
 
-Remember: You represent CareSetu healthcare platform."""
+TECHNICAL CONSTRAINTS:
+- Optimized for voice interaction
+- Railway cloud deployment
+- Real-time response capability
+
+Remember: You represent CareSetu's commitment to accessible healthcare technology."""
     
     async def handle_user_message(self, message: str, session_id: str = None) -> str:
         """Handle user messages with memory optimization."""
@@ -187,10 +186,30 @@ Remember: You represent CareSetu healthcare platform."""
                "I can assist with appointments, app support, and general health questions. "
                "What would you like to know?")
 
-# Health check endpoint for Railway
+# FastAPI app for Railway health checks
+app = FastAPI(title="CareSetu Voice Agent", version="1.0.0")
+
+@app.get("/health")
 async def health_check():
-    """Simple health check for Railway."""
-    return {"status": "healthy", "service": "caresetu-voice-agent"}
+    """Railway health check endpoint."""
+    return JSONResponse({
+        "status": "healthy",
+        "service": "caresetu-voice-agent",
+        "platform": "railway",
+        "version": "1.0.0"
+    })
+
+@app.get("/")
+async def root():
+    """Root endpoint."""
+    return JSONResponse({
+        "message": "CareSetu Voice Agent - Railway Deployment",
+        "status": "running",
+        "endpoints": {
+            "health": "/health",
+            "docs": "/docs"
+        }
+    })
 
 async def entrypoint(ctx: JobContext):
     """Railway optimized entrypoint."""
@@ -232,22 +251,29 @@ def prewarm_process(proc: WorkerOptions):
     # Log memory usage (simplified)
     logger.info("📊 Prewarm completed")
 
+def start_health_server():
+    """Start FastAPI health check server for Railway."""
+    port = int(os.getenv('PORT', 8080))
+    uvicorn.run(app, host="0.0.0.0", port=port, log_level="info")
+
 def main():
-    """Main function optimized for Railway."""
+    """Main function optimized for Railway deployment."""
     logger.info("🚀 CareSetu Voice Agent - Railway Deployment Starting...")
     
-    # Set Railway-specific port
-    port = int(os.getenv('PORT', 8080))
-    logger.info(f"🌐 Using port: {port}")
+    # Start health check server in background thread
+    health_thread = threading.Thread(target=start_health_server, daemon=True)
+    health_thread.start()
+    logger.info("✅ Health check server started")
     
-    # Note: Removed health check server to simplify Railway deployment
-    # Railway has built-in health monitoring
-    
-    # Run with minimal configuration
-    cli.run_app(WorkerOptions(
-        entrypoint_fnc=entrypoint,
-        prewarm_fnc=prewarm_process,
-    ))
+    # Run LiveKit agent
+    try:
+        cli.run_app(WorkerOptions(
+            entrypoint_fnc=entrypoint,
+            prewarm_fnc=prewarm_process,
+        ))
+    except Exception as e:
+        logger.error(f"❌ Agent startup failed: {e}")
+        raise
 
 if __name__ == "__main__":
     main()

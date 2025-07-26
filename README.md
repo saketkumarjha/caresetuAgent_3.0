@@ -45,9 +45,27 @@ caresetuAgent/
 
 ## 🚀 Quick Start
 
+### 🚂 Railway Deployment (Recommended)
+
+**One-Click Deploy:**
+
+1. Fork this repository
+2. Go to [Railway Dashboard](https://railway.app) → New Project → Deploy from GitHub
+3. Set environment variables (see [Railway Quick Start](RAILWAY_QUICK_START.md))
+4. Deploy and get instant HTTPS URL
+
+**Automated Deploy:**
+
+```bash
+npm install -g @railway/cli
+python deploy_railway.py
+```
+
+📖 **Full Guide**: [Railway Deployment Guide](RAILWAY_DEPLOYMENT.md)
+
 ### Prerequisites
 
-- Python 3.8+
+- Python 3.11+
 - Google Cloud Account (for Calendar API)
 - LiveKit Account (Free tier available)
 - AssemblyAI Account
@@ -303,4 +321,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-**Built  for CareSetu Healthcare**
+**Built for CareSetu Healthcare**

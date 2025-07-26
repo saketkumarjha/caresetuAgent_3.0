@@ -1,73 +1,68 @@
-# Railway Ignore File - Clean and Minimal
+# Railway ignore file - optimize build size and speed
 
-# Development and documentation files
-*.md
+# Development files
+.git/
+.github/
+.vscode/
+.idea/
+*.log
+*.tmp
+
+# Documentation
 docs/
+*.md
+!README.md
+
+# Test files
 tests/
-scripts/
+test_*.py
+*_test.py
 
-# Original heavy files (use Railway optimized versions)
-Dockerfile
-docker-compose.yml
+# Frontend (if not needed for backend)
+caresetuagent-frontend/
+frontend-example/
 
-# Original agent files (use Railway optimized versions)
-src/agent.py
-src/config.py
-src/core/stt_config.py
-src/core/conversation_learning.py
+# Data directories (use Railway volumes instead)
+chroma_db/
+knowledge_index/
+learned_knowledge/
+temp/
+data/
 
-# Heavy dependencies not needed for Railway
-knowledge/storage/embedding_cache.py
-knowledge/engines/semantic_search.py
-knowledge/managers/knowledge_base_semantic.py
-
-# Deployment scripts and utilities
-livekit_cloud_deploy.py
-deploy_to_livekit.py
-verify_structure.py
-test_tts_simple.py
-deploy.bat
-
-# Other deployment configs
-render.yaml
-RENDER_DEPLOYMENT.md
-
-# Environment files (Railway uses env vars)
-.env.example
-
-# Cache and build artifacts
+# Python cache
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
 *.so
-.coverage
-.pytest_cache/
-.mypy_cache/
-build/
-dist/
-*.egg-info/
-
-# IDE and OS files
-.vscode/
-.idea/
-*.swp
-*.swo
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-logs/
 
 # Virtual environments
 venv/
 env/
 ENV/
 
-# Temporary and data directories
-temp/
-chroma_db/
-data/
-learned_knowledge/
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Large files that aren't needed
+company_pdfs/
+*.pdf
+*.mp4
+*.avi
+*.mov
+
+# Old deployment files
+deploy.bat
+deploy_to_livekit.py
+livekit_cloud_deploy.py
+DEPLOYMENT.md
+RENDER_DEPLOYMENT.md
+GITHUB_READY_SUMMARY.md
